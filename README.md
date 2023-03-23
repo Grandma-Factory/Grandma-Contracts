@@ -12,7 +12,7 @@ Install node dependencies
 npm install
 ```
 
-Create the environment configuration file ```.venv```
+Create the environment configuration file ```.env```
 
 ```
 ETHSCAN_API_KEY="..."
@@ -43,5 +43,10 @@ Deploy Grandma-Token example:
 
 
 ```
-npx hardhat run scripts/deployGrandmaToken.ts --network sepolia
+npx hardhat run --network sepolia scripts/deployGrandmaToken.ts
 ```
+
+
+## Security
+
+If you detect any security flaw, please contact us at **security@grandma.digital**
