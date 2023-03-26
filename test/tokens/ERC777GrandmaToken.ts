@@ -1,12 +1,15 @@
 
 import { expect } from "chai";
 import { ethers } from "hardhat";
+import { ERC777GrandmaToken } from "../../typechain-types/contracts/tokens/ERC777GrandmaToken";
+import { ERC777GrandmaToken__factory } from "../../typechain-types/factories/contracts/tokens/ERC777GrandmaToken__factory";
+
 
 describe("ERC777GrandmaToken", function () {
 
   let totalSupply = '10000000000000000000000000000';
-  let factory: any;
-  let gmaToken: any;
+  let factory: ERC777GrandmaToken__factory;
+  let gmaToken: ERC777GrandmaToken;
   let owner: any;
   let addr1: any;
   let addr2: any;
