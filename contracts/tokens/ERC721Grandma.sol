@@ -22,6 +22,8 @@ contract ERC721Grandma is ERC721, Pausable, AccessControl, ERC721Burnable, ERC29
     bytes32 public constant URI_SETTER_ROLE = keccak256("URI_SETTER_ROLE");
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    bytes32 public constant ADMIN_ROYALTIES_ROLE = keccak256("ADMIN_ROYALTIES_ROLE");
+    
     Counters.Counter private _tokenIdCounter;
     string private _chainBaseURI;
 
@@ -30,6 +32,7 @@ contract ERC721Grandma is ERC721, Pausable, AccessControl, ERC721Burnable, ERC29
         _grantRole(URI_SETTER_ROLE, msg.sender);
         _grantRole(PAUSER_ROLE, msg.sender);
         _grantRole(MINTER_ROLE, msg.sender);
+        _grantRole(ADMIN_ROYALTIES_ROLE, msg.sender);
 
         _chainBaseURI = string.concat("https://api.grandma.digital/token/", Strings.toHexString(uint256(uint160(address(this))), 20), "/");
     }
@@ -60,6 +63,25 @@ contract ERC721Grandma is ERC721, Pausable, AccessControl, ERC721Burnable, ERC29
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
     }
+
+    // For 1.5% royalty fee, feeNumerator=150
+    // For 15.75% royalty fee, feeNumerator=1575
+    function setDefaultRoyalty(address receiver, uint96 feeNumerator) public onlyRole(ADMIN_ROYALTIES_ROLE) {
+        _setDefaultRoyalty(receiver, feeNumerator);
+    }
+
+    function setTokenRoyalty(uint256 tokenId, address receiver, uint96 feeNumerator) public onlyRole(ADMIN_ROYALTIES_ROLE) {
+        _setTokenRoyalty(tokenId, receiver, feeNumerator);
+    }
+
+    function resetTokenRoyalty(uint256 tokenId) public onlyRole(ADMIN_ROYALTIES_ROLE) {
+        _resetTokenRoyalty(tokenId);
+    }
+
+    function deleteDefaultRoyalty() public onlyRole(ADMIN_ROYALTIES_ROLE) {
+        deleteDefaultRoyalty();
+    }
+
 
     function _beforeTokenTransfer(address from, address to, uint256 tokenId, uint256 batchSize) internal override whenNotPaused {
         super._beforeTokenTransfer(from, to, tokenId, batchSize);

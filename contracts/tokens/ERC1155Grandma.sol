@@ -19,13 +19,7 @@ contract ERC1155Grandma is ERC1155, AccessControl, Pausable, ERC1155Burnable, ER
     bytes32 public constant URI_SETTER_ROLE = keccak256("URI_SETTER_ROLE");
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
-
-    // ids used to store grandma reward tokens
-    enum GrandmaRewardIds {
-        COTTON,
-        CASHMERE, 
-        SILK
-    }
+    bytes32 public constant ADMIN_ROYALTIES_ROLE = keccak256("ADMIN_ROYALTIES_ROLE");
 
     constructor() 
         ERC1155(string.concat("https://api.grandma.digital/token/", Strings.toHexString(uint256(uint160(address(this))), 20), "/{id}")) 
@@ -34,6 +28,7 @@ contract ERC1155Grandma is ERC1155, AccessControl, Pausable, ERC1155Burnable, ER
         _grantRole(URI_SETTER_ROLE, msg.sender);
         _grantRole(PAUSER_ROLE, msg.sender);
         _grantRole(MINTER_ROLE, msg.sender);
+        _grantRole(ADMIN_ROYALTIES_ROLE, msg.sender);
     }
 
     function setURI(string memory newuri) public onlyRole(URI_SETTER_ROLE) {
@@ -60,6 +55,22 @@ contract ERC1155Grandma is ERC1155, AccessControl, Pausable, ERC1155Burnable, ER
         onlyRole(MINTER_ROLE)
     {
         _mintBatch(to, ids, amounts, data);
+    }
+
+    function setDefaultRoyalty(address receiver, uint96 feeNumerator) public onlyRole(ADMIN_ROYALTIES_ROLE) {
+        _setDefaultRoyalty(receiver, feeNumerator);
+    }
+
+    function setTokenRoyalty(uint256 tokenId, address receiver, uint96 feeNumerator) public onlyRole(ADMIN_ROYALTIES_ROLE) {
+        _setTokenRoyalty(tokenId, receiver, feeNumerator);
+    }
+
+    function resetTokenRoyalty(uint256 tokenId) public onlyRole(ADMIN_ROYALTIES_ROLE) {
+        _resetTokenRoyalty(tokenId);
+    }
+
+    function deleteDefaultRoyalty() public onlyRole(ADMIN_ROYALTIES_ROLE) {
+        deleteDefaultRoyalty();
     }
 
     function _beforeTokenTransfer(address operator, address from, address to, uint256[] memory ids, uint256[] memory amounts, bytes memory data)
