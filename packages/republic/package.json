@@ -1,0 +1,17 @@
+{
+  "name": "@grandma/republic",
+  "version": "0.1.0",
+  "scripts": {
+    "test": "npx hardhat test",
+    "compile": "npx hardhat compile",
+    "clean": "npx hardhat clean"
+  },
+  "devDependencies": {
+    "ethers": "6.6.2",
+    "find-config": "^1.0.0",
+    "hardhat": "2.16.1",
+    "mocha": "^10.2.0",
+    "ts-node": "^10.9.1",
+    "typescript": "5.1.5"
+  }
+}
